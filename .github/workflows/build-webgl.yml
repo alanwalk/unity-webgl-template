@@ -1,0 +1,50 @@
+name: Build WebGL
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: webgl-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Unity 2022.3.62f3 WebGL
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-WebGL-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-WebGL-
+
+      - name: Build WebGL
+        uses: game-ci/unity-builder@v4
+        with:
+          unityVersion: 2022.3.62f3
+          targetPlatform: WebGL
+          buildMethod: WebGLBuilder.Build
+
+      - name: Upload WebGL artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebGL
+          path: Builds/WebGL
+          if-no-files-found: error
+          retention-days: 14
