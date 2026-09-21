@@ -13,6 +13,12 @@ Local builds are written to `Builds/WebGL`.
 
 ## GitHub Actions
 
-The workflow runs on pushes to `main` and via manual dispatch. It uploads `Builds/WebGL` as the `WebGL` artifact.
+The workflow runs on pushes to `main` and via manual dispatch. It uploads `Builds/WebGL` as the `WebGL` artifact for 14 days.
 
-Add a repository Actions secret named `UNITY_LICENSE` containing your activated Unity license file content before running the workflow.
+For a Unity Personal license, add these repository Actions secrets:
+
+- `UNITY_LICENSE`: complete contents of the activated `.ulf` file
+- `UNITY_EMAIL`: Unity account email
+- `UNITY_PASSWORD`: Unity account password
+
+Then open **Actions > Build WebGL > Run workflow**. The generated site is available from the run's **Artifacts** section.
